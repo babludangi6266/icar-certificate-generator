@@ -1,0 +1,265 @@
+/* ============================================================
+   ICAR-CIWA Certificate of Completion — Large Professional Layout
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700;1,800&family=EB+Garamond:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+.certificate-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Base Certificate Canvas (A4 landscape ratio 1000px x 700px) */
+.certificate-container {
+  width: 1020px;
+  height: 720px;
+  background-color: #ffffff;
+  position: relative;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+  box-sizing: border-box;
+}
+
+/* Golden Outer Bevelled Frame */
+.frame-outer {
+  position: absolute;
+  inset: 14px;
+  border: 8px solid #025506;
+  outline: 4px solid #0ba800;
+  outline-offset: -12px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+/* Inner Fine Gold Line */
+.frame-inner {
+  position: absolute;
+  inset: 6px;
+  border: 2px solid #0e2c08;
+  padding: 24px 44px 22px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+/* ==================== HEADER LOGOS ==================== */
+.certificate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  height: 95px;
+}
+
+.logo-left-box .left-logo-img {
+  height: 120px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-right-box .right-logo-img {
+  height: 92px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ==================== TITLE SECTION ==================== */
+.certificate-title-box {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 0px;
+}
+
+.main-cert-title {
+  font-family:'Times New Roman';
+  font-size: 58px;
+  font-weight: 900;
+  color: #cba427;
+  letter-spacing: 6px;
+  margin: 0;
+  line-height: 1;
+  text-shadow: 1px 1px 0px #6b530c;
+  
+}
+
+.sub-cert-title {
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  font-size: 23px;
+  font-weight: 800;
+  color: #7c5727;
+  letter-spacing: 5px;
+  margin-top: 5px;
+  margin-bottom: -10px;
+  text-transform: uppercase;
+}
+
+/* ==================== BODY SECTION ==================== */
+.certificate-body-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 0;
+}
+
+.certify-lead {
+  font-family: 'EB Garamond', 'Georgia', serif;
+  font-size: 23px;
+  font-weight: 800;
+  color: #075e14;
+  margin: 6px 0 10px 0;
+  margin-top: -15px;
+  
+}
+
+/* Participant Name & Institute Line */
+.participant-fullname {
+  font-family: 'Lucida Calligraphy';
+  font-size: 23px;
+  font-weight: 700;
+  font-style: italic;
+  color: #c91c1c;
+  margin: 6px 0 12px 0;
+  line-height: 1.35;
+  padding: 0 15px;
+  max-width: 900px;
+}
+
+/* ATARI Zone Line */
+.zone-statement {
+  font-family: 'EB Garamond', 'Georgia', serif;
+  font-size: 22px;
+  font-weight: 600;
+  font-style: Regular;
+  color: #000000;
+  margin: 0 0 18px 0;
+  line-height: 1.35;
+  max-width: 900px;
+}
+
+/* Training Details */
+.training-details {
+  max-width: 880px;
+  margin: 0 auto;
+  line-height: 1.55;
+  margin-top: -15px;
+}
+
+.training-line-1,
+.training-line-2 {
+  font-family: 'EB Garamond', 'Georgia', serif;
+  font-size: 22px;
+  color: #1c301d;
+  margin: 4px 0;
+  line-height: 1.55;
+  letter-spacing: 0.4px;
+  
+}
+
+.highlight-program {
+  font-weight: 800;
+  color: #0e2612;
+  font-size: 20px;
+}
+
+.training-organizer {
+  font-family: 'EB Garamond', 'Georgia', serif;
+  font-size: 20px;
+  color: #1c301d;
+  margin: 6px 0 4px 0;
+  line-height: 1.55;
+}
+
+.training-dates {
+  font-family: 'EB Garamond', 'Georgia', serif;
+  font-size: 20px;
+  color: #1c301d;
+  margin: 4px 0 0 0;
+  line-height: 1.55;
+}
+
+/* ==================== FOOTER SECTION ==================== */
+.certificate-footer-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  padding-top: 14px;
+  margin-top: auto;
+}
+
+.serial-no-box {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1806be;
+}
+
+.signature-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.sig-name {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #075e14;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.sig-title {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #075e14;
+  margin: 3px 0 0 0;
+  line-height: 1.25;
+}
+
+/* Placeholder styling */
+.placeholder-text {
+  opacity: 0.55;
+  font-style: italic;
+}
+
+/* Print Overrides */
+@media print {
+  .certificate-wrapper {
+    padding: 0;
+  }
+  .certificate-container {
+    box-shadow: none;
+    width: 100%;
+    page-break-inside: avoid;
+  }
+}
+
+/* Scale for preview area */
+@media (max-width: 1200px) {
+  .certificate-container {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 980px) {
+  .certificate-container {
+    transform: scale(0.7);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 768px) {
+  .certificate-container {
+    transform: scale(0.5);
+    transform-origin: top center;
+  }
+}
