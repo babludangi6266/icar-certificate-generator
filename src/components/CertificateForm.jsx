@@ -1,10 +1,12 @@
 import React from 'react';
 import './CertificateForm.css';
-import { atariZones, sampleNames } from '../data/certificateData';
+import { atariZones, sampleParticipants, salutations } from '../data/certificateData';
 
 const CertificateForm = ({
-  selectedName,
-  setSelectedName,
+  salutation,
+  setSalutation,
+  selectedParticipantId,
+  setSelectedParticipantId,
   instituteName,
   setInstituteName,
   selectedZone,
@@ -29,30 +31,54 @@ const CertificateForm = ({
       </div>
 
       <div className="form-body">
-        {/* Name Field */}
+        {/* Salutation + Name Row */}
         <div className="form-group">
           <label htmlFor="name-select">
             <span className="label-icon">👤</span>
-            Participant Name
+            Participant Name & Salutation
           </label>
-          <div className="select-wrapper">
-            <select
-              id="name-select"
-              value={selectedName}
-              onChange={(e) => setSelectedName(e.target.value)}
-            >
-              <option value="">— Select Participant —</option>
-              {sampleNames.map((name, index) => (
-                <option key={index} value={name}>
-                  {name}
-                </option>
-              ))}
-            </select>
-            <span className="select-arrow">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                <path d="M6 8L1 3h10z"/>
-              </svg>
-            </span>
+          <div className="name-input-row">
+            {/* Salutation Dropdown */}
+            <div className="select-wrapper salutation-select-wrapper">
+              <select
+                id="salutation-select"
+                value={salutation}
+                onChange={(e) => setSalutation(e.target.value)}
+                title="Select Salutation"
+              >
+                {salutations.map((sal, index) => (
+                  <option key={index} value={sal}>
+                    {sal}
+                  </option>
+                ))}
+              </select>
+              <span className="select-arrow">
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor">
+                  <path d="M6 8L1 3h10z"/>
+                </svg>
+              </span>
+            </div>
+
+            {/* Hardcoded Participant Name Dropdown */}
+            <div className="select-wrapper name-select-wrapper">
+              <select
+                id="name-select"
+                value={selectedParticipantId}
+                onChange={(e) => setSelectedParticipantId(e.target.value)}
+              >
+                <option value="">— Select Name —</option>
+                {sampleParticipants.map((participant) => (
+                  <option key={participant.id} value={participant.id}>
+                    {participant.name}
+                  </option>
+                ))}
+              </select>
+              <span className="select-arrow">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                  <path d="M6 8L1 3h10z"/>
+                </svg>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -100,9 +126,9 @@ const CertificateForm = ({
 
         {/* Status indicator */}
         <div className="form-status">
-          <div className={`status-dot ${selectedName && instituteName && selectedZone ? 'active' : ''}`}></div>
+          <div className={`status-dot ${selectedParticipantId && instituteName && selectedZone ? 'active' : ''}`}></div>
           <span>
-            {selectedName && instituteName && selectedZone
+            {selectedParticipantId && instituteName && selectedZone
               ? 'Certificate ready to download'
               : 'Fill all fields to generate certificate'}
           </span>
@@ -114,7 +140,7 @@ const CertificateForm = ({
         <button
           className="btn btn-primary"
           onClick={onDownloadPDF}
-          disabled={!selectedName || !instituteName || !selectedZone || isGenerating}
+          disabled={!selectedParticipantId || !instituteName || !selectedZone || isGenerating}
         >
           {isGenerating ? (
             <>
@@ -135,7 +161,7 @@ const CertificateForm = ({
         <button
           className="btn btn-secondary"
           onClick={onPrint}
-          disabled={!selectedName || !instituteName || !selectedZone}
+          disabled={!selectedParticipantId || !instituteName || !selectedZone}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="6 9 6 2 18 2 18 9"></polyline>

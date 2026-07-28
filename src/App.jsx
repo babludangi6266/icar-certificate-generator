@@ -1,25 +1,32 @@
 import React, { useState, useRef, useCallback } from 'react';
 import Certificate from './components/Certificate';
 import CertificateForm from './components/CertificateForm';
-import { generateSerialNumber } from './data/certificateData';
+import { sampleParticipants } from './data/certificateData';
 import { downloadCertificateAsPDF, printCertificate } from './utils/downloadCertificate';
 
 function App() {
-  const [selectedName, setSelectedName] = useState('');
+  const [salutation, setSalutation] = useState('Dr.');
+  const [selectedParticipantId, setSelectedParticipantId] = useState('');
   const [instituteName, setInstituteName] = useState('');
   const [selectedZone, setSelectedZone] = useState('');
-  const [serialNumber] = useState(generateSerialNumber());
   const [isGenerating, setIsGenerating] = useState(false);
   const certificateRef = useRef(null);
+
+  // Find the selected participant object from hardcoded list
+  const selectedParticipant = sampleParticipants.find((p) => p.id === selectedParticipantId);
+  const selectedName = selectedParticipant ? selectedParticipant.name : '';
+  const serialNumber = selectedParticipant ? selectedParticipant.serialNumber : 'CIWA/2026/NOGRA/166';
+
+  const fullNameWithSalutation = selectedName ? `${salutation} ${selectedName}` : '';
 
   const handleDownloadPDF = useCallback(async () => {
     setIsGenerating(true);
     try {
-      await downloadCertificateAsPDF(certificateRef, selectedName);
+      await downloadCertificateAsPDF(certificateRef, fullNameWithSalutation || 'Participant');
     } finally {
       setIsGenerating(false);
     }
-  }, [selectedName]);
+  }, [fullNameWithSalutation]);
 
   const handlePrint = useCallback(() => {
     printCertificate(certificateRef);
@@ -28,8 +35,10 @@ function App() {
   return (
     <div className="app-layout">
       <CertificateForm
-        selectedName={selectedName}
-        setSelectedName={setSelectedName}
+        salutation={salutation}
+        setSalutation={setSalutation}
+        selectedParticipantId={selectedParticipantId}
+        setSelectedParticipantId={setSelectedParticipantId}
         instituteName={instituteName}
         setInstituteName={setInstituteName}
         selectedZone={selectedZone}
@@ -50,6 +59,7 @@ function App() {
         <div className="preview-content">
           <Certificate
             ref={certificateRef}
+            salutation={salutation}
             name={selectedName}
             instituteName={instituteName}
             atariZone={selectedZone}

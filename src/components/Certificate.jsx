@@ -3,9 +3,10 @@ import './Certificate.css';
 import leftSideLogo from '../assets/leftsidelogo.png';
 import icarRightLogo from '../assets/icarlogoright.gif';
 
-const Certificate = React.forwardRef(({ name, instituteName, atariZone, serialNumber }, ref) => {
-  // Combine Name and Institute Name on the same line if both are present
-  const displayName = name || 'Dr. Madhuri Revanwar';
+const Certificate = React.forwardRef(({ salutation = 'Dr.', name, instituteName, atariZone, serialNumber }, ref) => {
+  // Combine Salutation, Name and Institute Name dynamically
+  const activeSalutation = salutation || 'Dr.';
+  const displayName = name ? `${activeSalutation} ${name}` : `${activeSalutation} Madhuri Revanwar`;
   const displayInstitute = instituteName ? `, ${instituteName}` : '';
   const displayZone = atariZone || 'ICAR-Agricultural Technology Application Research Institute, Zone VIII, Pune';
 

@@ -73,6 +73,20 @@
   font-size: 16px;
 }
 
+.name-input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.salutation-select-wrapper {
+  width: 105px;
+  flex-shrink: 0;
+}
+
+.name-select-wrapper {
+  flex: 1;
+}
+
 .select-wrapper {
   position: relative;
 }
