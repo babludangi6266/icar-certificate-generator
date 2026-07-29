@@ -138,7 +138,7 @@ const LoginPage = ({ onLogin, onAdminExport }) => {
                         onClick={onAdminExport}
                         style={{ background: 'none', border: 'none', color: '#c8a415', fontSize: '13px', cursor: 'pointer', textDecoration: 'underline', fontWeight: '500' }}
                     >
-                        Admin
+                        Admin Access Only
                     </button>
                 </div>
             </div>
