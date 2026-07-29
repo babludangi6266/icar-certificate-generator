@@ -28,15 +28,15 @@ export const downloadCertificateAsPDF = async (certificateRef, participantName) 
     // Ensure all web fonts and images in the clone render completely
     await new Promise((resolve) => setTimeout(resolve, 150));
 
-    // Capture at scale: 2.3 -> Generates 2346px x 1656px canvas (Exact 200 DPI for A4 Landscape)
+    // Capture at scale: 6.88 -> Generates 7018px x 4954px canvas (Exact 600 DPI for A4 Landscape)
     const canvas = await html2canvas(clone, {
-      scale: 2.3,
+      scale: 6.88,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
       logging: false,
       imageTimeout: 0,
-      dpi: 200,
+      dpi: 600,
       windowWidth: 1020,
       windowHeight: 720,
     });
@@ -44,7 +44,8 @@ export const downloadCertificateAsPDF = async (certificateRef, participantName) 
     // Remove the clone from DOM
     document.body.removeChild(container);
 
-    const imgData = canvas.toDataURL('image/png', 0.95);
+    // Use JPEG with 0.85 quality to ensure the file size stays well below 10MB at 600 DPI
+    const imgData = canvas.toDataURL('image/jpeg', 0.85);
 
     // Create A4 Landscape PDF (297mm x 210mm)
     const pdf = new jsPDF({
@@ -57,8 +58,8 @@ export const downloadCertificateAsPDF = async (certificateRef, participantName) 
     const pdfWidth = 297;
     const pdfHeight = 210;
 
-    // Add 200 DPI crisp image to PDF
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+    // Add 600 DPI crisp image to PDF
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
 
     const sanitizedName = participantName
       ? participantName.replace(/[^a-zA-Z0-9_\-\s]/g, '').trim().replace(/\s+/g, '_')
@@ -69,7 +70,7 @@ export const downloadCertificateAsPDF = async (certificateRef, participantName) 
     pdf.save(fileName);
     return true;
   } catch (error) {
-    console.error('Error generating 200 DPI PDF:', error);
+    console.error('Error generating 600 DPI PDF:', error);
     if (document.body.contains(container)) {
       document.body.removeChild(container);
     }
