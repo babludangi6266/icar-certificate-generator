@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './PasswordModal.css';
+import { verifyAdminPassword } from '../utils/adminAuth';
 
 const PasswordModal = ({ isOpen, onClose, onSuccess }) => {
   const [password, setPassword] = useState('');
@@ -20,9 +21,10 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }) => {
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password.trim() === 'ciwa#2026') {
+    const isValid = await verifyAdminPassword(password.trim());
+    if (isValid) {
       setError('');
       onSuccess();
       onClose();
@@ -37,7 +39,7 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }) => {
     <div className="glass-modal-overlay" onClick={onClose}>
       <div className={`glass-modal-card ${shake ? 'shake-anim' : ''}`} onClick={(e) => e.stopPropagation()}>
         <button className="glass-modal-close" onClick={onClose} aria-label="Close modal">
-          X
+          ✕
         </button>
 
         <div className="glass-modal-header">
@@ -48,7 +50,7 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }) => {
             </svg>
           </div>
           <h3>Admin Authorization</h3>
-          <p>Enter admin password to export download records</p>
+          <p>Enter Master Password to open Admin Control Panel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="glass-modal-body">
@@ -57,7 +59,7 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }) => {
               ref={inputRef}
               type="password"
               className={`glass-password-input ${error ? 'input-error' : ''}`}
-              placeholder="Enter password..."
+              placeholder="Enter admin password..."
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -73,7 +75,7 @@ const PasswordModal = ({ isOpen, onClose, onSuccess }) => {
               Cancel
             </button>
             <button type="submit" className="btn-glass-submit">
-              Unlock & Export
+              Access Admin Panel
             </button>
           </div>
         </form>

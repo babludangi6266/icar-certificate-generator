@@ -96,4 +96,8 @@ function adminExcelSyncPlugin() {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), adminExcelSyncPlugin()],
+  server: {
+    host: true,
+    port: 5173,
+  },
 });

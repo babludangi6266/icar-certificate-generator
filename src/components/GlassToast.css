@@ -1,0 +1,217 @@
+/* Glassmorphism Notification & Loader Styles */
+
+/* 1. Glass Loader Overlay */
+.glass-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: glassFadeIn 0.25s ease-out;
+}
+
+.glass-loader-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25), 0 0 30px rgba(5, 150, 105, 0.15);
+  border-radius: 20px;
+  padding: 32px 40px;
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  transform: translateY(0);
+  animation: glassPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-spinner-ring {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 18px auto;
+  border: 4px solid rgba(5, 150, 105, 0.15);
+  border-top-color: #059669;
+  border-right-color: #047857;
+  border-radius: 50%;
+  animation: spinRing 0.8s infinite linear;
+}
+
+.glass-loader-card h4 {
+  margin: 0 0 6px 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.glass-loader-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* Glass Confirmation Modal Card */
+.glass-confirm-card {
+  border-top: 4px solid #059669;
+  padding: 28px 32px;
+}
+
+.glass-confirm-icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.glass-confirm-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.btn-glass-cancel {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-glass-cancel:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-glass-confirm {
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+  transition: all 0.2s;
+}
+
+.btn-glass-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+}
+
+/* 2. Glassmorphism Notification Toast Container */
+.glass-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  max-width: 420px;
+  width: calc(100% - 48px);
+}
+
+.glass-toast-item {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(0, 0, 0, 0.05);
+  animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s ease;
+}
+
+.glass-toast-item.toast-success {
+  border-left: 5px solid #10b981;
+}
+
+.glass-toast-item.toast-danger {
+  border-left: 5px solid #ef4444;
+}
+
+.glass-toast-item.toast-warning {
+  border-left: 5px solid #f59e0b;
+}
+
+.glass-toast-item.toast-info {
+  border-left: 5px solid #3b82f6;
+}
+
+.toast-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  display: block;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.toast-message {
+  display: block;
+  font-size: 0.85rem;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.toast-close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.toast-close-btn:hover {
+  color: #0f172a;
+}
+
+/* Animations */
+@keyframes spinRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes glassFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes glassPopIn {
+  from { opacity: 0; transform: scale(0.92) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateX(40px) scale(0.95); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}

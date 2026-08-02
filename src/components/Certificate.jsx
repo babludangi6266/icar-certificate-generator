@@ -1,16 +1,147 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import QRCode from 'qrcode';
 import './Certificate.css';
 import leftSideLogo from '../assets/leftsidelogo.png';
 import icarRightLogo from '../assets/icarlogoright.gif';
 import certificateHead from '../assets/certificate head.png';
-import directorSign from '../assets/director sign.png';
+import { getCertificateSettings, getEffectiveTrainingDates } from '../utils/certificateSettings';
+import { fetchOrganizationsList } from '../utils/dbTracker';
 
-const Certificate = React.forwardRef(({ salutation = '', name, instituteName, atariZone, serialNumber }, ref) => {
+const Certificate = React.forwardRef(({ salutation = '', name, instituteName, atariZone, serialNumber, trainingDates, customSettings, category }, ref) => {
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
+  const settings = customSettings || getCertificateSettings();
+
+  const [resolvedZone, setResolvedZone] = useState(atariZone);
+  const [resolvedCategory, setResolvedCategory] = useState(category);
+  const [resolvedInstituteName, setResolvedInstituteName] = useState(instituteName || '');
+
+  useEffect(() => {
+    setResolvedInstituteName(instituteName || '');
+  }, [instituteName]);
+
+  // Dynamic Zone / University Full Name & SAU/CAU Short Name Resolution from DB
+  useEffect(() => {
+    fetchOrganizationsList().then(orgs => {
+      if (!orgs || orgs.length === 0) return;
+
+      const targetZone = (atariZone || '').trim();
+      const targetInst = (instituteName || '').trim();
+      const explicitCat = (category || '').trim();
+
+      if (!targetZone && !targetInst && !explicitCat) return;
+
+      let foundInst = null;
+      let foundZone = null;
+
+      if (targetInst) {
+        const cleanInst = targetInst.toLowerCase();
+        foundInst = orgs.find(o => 
+          (o.shortName || '').trim().toLowerCase() === cleanInst ||
+          (o.fullName || '').trim().toLowerCase() === cleanInst
+        ) || orgs.find(o =>
+          (o.shortName && cleanInst.includes((o.shortName).trim().toLowerCase())) ||
+          (o.fullName && cleanInst.includes((o.fullName).trim().toLowerCase()))
+        );
+      }
+
+      if (targetZone) {
+        const zoneMatch = targetZone.match(/Zone\s+([IVX0-9]+)/i);
+        if (zoneMatch) {
+          const zoneStr = `Zone ${zoneMatch[1]}`.toLowerCase();
+          foundZone = orgs.find(o => 
+            (o.fullName || '').toLowerCase().includes(zoneStr) ||
+            (o.shortName || '').toLowerCase().includes(zoneStr)
+          );
+        }
+      }
+
+      const activeCat = (explicitCat || foundInst?.category || foundZone?.category || '').toUpperCase();
+      const isSauOrCau = activeCat.includes('SAU') || activeCat.includes('CAU');
+
+      if (isSauOrCau) {
+        if (foundInst) {
+          setResolvedInstituteName(foundInst.shortName || foundInst.fullName || targetInst);
+          setResolvedZone(foundInst.fullName || (activeCat.includes('CAU') ? 'Central Agricultural University' : 'State Agricultural University'));
+        } else {
+          setResolvedInstituteName(targetInst);
+          setResolvedZone(activeCat.includes('CAU') ? 'Central Agricultural University' : 'State Agricultural University');
+        }
+      } else {
+        if (foundZone && foundZone.fullName) {
+          setResolvedZone(foundZone.fullName);
+        } else if (targetZone) {
+          setResolvedZone(targetZone);
+        }
+
+        if (foundInst && (foundInst.shortName || foundInst.fullName)) {
+          setResolvedInstituteName(foundInst.shortName || foundInst.fullName);
+        } else if (targetInst) {
+          setResolvedInstituteName(targetInst);
+        }
+      }
+
+      if (explicitCat) {
+        setResolvedCategory(explicitCat);
+      } else if (foundInst && foundInst.category) {
+        setResolvedCategory(foundInst.category);
+      } else if (foundZone && foundZone.category) {
+        setResolvedCategory(foundZone.category);
+      }
+    });
+  }, [atariZone, instituteName, category]);
+
+  const displayZone = resolvedZone || atariZone || 'ICAR-Agricultural Technology Application Research Institute, Zone I, Ludhiana';
+  const validSerial = serialNumber || 'CIWA/2026/NOGRA/166';
+  
+  // Dynamic hierarchical training dates statement (Participant-wise > Zone-wise > Global default)
+  const displayTrainingDates = trainingDates || getEffectiveTrainingDates(validSerial, displayZone, customSettings?.trainingDates);
+
+  const activeCategory = (resolvedCategory || category || atariZone || '').trim().toUpperCase();
+  const instUpper = (instituteName || resolvedInstituteName || '').trim().toUpperCase();
+  const zoneUpper = (displayZone || '').trim().toUpperCase();
+
+  // Category Layout Format Flags
+  const isKvk = activeCategory.startsWith('KVK') || activeCategory.includes('ATARI') || instUpper.includes('KVK') || zoneUpper.includes('ATARI');
+  const isSauOrCau = activeCategory.includes('SAU') || activeCategory.includes('CAU');
+  
+  // ICAR Institute is strictly true ONLY if category is ICAR Institute and NOT KVK / ATARI / SAU / CAU
+  const isIcarInstitute = !isKvk && !isSauOrCau && (
+    activeCategory.includes('ICAR INSTITUTE') || 
+    activeCategory === 'ICAR' || 
+    (instUpper.includes('ICAR') && !instUpper.includes('AGRICULTURAL TECHNOLOGY') && !instUpper.includes('KVK'))
+  );
+
+  const finalInstituteName = resolvedInstituteName || instituteName;
+
   // Combine Salutation, Name and Institute Name dynamically
   const activeSalutation = salutation ? `${salutation} ` : '';
   const displayName = name ? `${activeSalutation}${name}` : `${activeSalutation}Madhuri Revanwar`.trim();
-  const displayInstitute = instituteName ? `, ${instituteName}` : '';
-  const displayZone = atariZone || 'ICAR-Agricultural Technology Application Research Institute, Zone VIII, Pune';
+  const displayInstitute = finalInstituteName ? `, ${finalInstituteName}` : '';
+
+  // Generate Dynamic High-Resolution QR Code
+  useEffect(() => {
+    const verificationPayload = `ICAR-CIWA OFFICIAL CERTIFICATE VERIFICATION
+Serial No: ${validSerial}
+Participant: ${displayName}
+Institute: ${finalInstituteName || 'ICAR'}
+Zone: ${displayZone}
+Training: Strengthening Agriculture Research with Gender Perspective
+Organized By: ${settings.trainingOrganizer || 'ICAR-CIWA, Bhubaneswar'} (${displayTrainingDates})
+Status: VERIFIED & AUTHENTIC
+Verify Link: https://icar-ciwa.org.in/verify?sn=${encodeURIComponent(validSerial)}`;
+
+    QRCode.toDataURL(verificationPayload, {
+      width: 280,
+      margin: 1,
+      color: {
+        dark: '#4a3b10', // Rich dark brown matching certificate theme
+        light: '#ffffff'
+      },
+      errorCorrectionLevel: 'H'
+    })
+      .then(url => setQrCodeUrl(url))
+      .catch(err => console.error("Error generating QR Code:", err));
+  }, [validSerial, displayName, finalInstituteName, displayZone, settings]);
 
   return (
     <div className="certificate-wrapper">
@@ -42,43 +173,75 @@ const Certificate = React.forwardRef(({ salutation = '', name, instituteName, at
 
                 {/* Main Content Body */}
                 <div className="certificate-body-box">
-                  <p className="certify-lead">This is to certify that</p>
+                  <p className="certify-lead">
+                    This is to certify that
+                  </p>
 
-                  <p className="participant-fullname">
+                  <p className={`participant-fullname ${isIcarInstitute ? 'icar-institute-name' : ''}`}>
                     <span className={!name ? 'placeholder-text' : ''}>
                       {displayName}{displayInstitute}
                     </span>
                   </p>
 
-                  <p className="zone-statement">
-                    under <span className={!atariZone ? 'placeholder-text' : ''}>{displayZone}</span>
-                  </p>
+                  {!isIcarInstitute ? (
+                    <>
+                      <p className="zone-statement">
+                        under <span className={!atariZone ? 'placeholder-text' : ''}>{displayZone}</span>
+                      </p>
 
-                  <div className="training-details">
-                    <p className="training-line-1">
-                      has successfully completed the Training Programme on <strong className="highlight-program">“Strengthening Agriculture Research</strong>
-                    </p>
-                    <p className="training-line-2">
-                      <strong className="highlight-program">with Gender Perspective for Sustainable Agri-Food System”</strong> organized by
-                    </p>
-                    <p className="training-organizer">
-                      ICAR-Central Institute for Women in Agriculture, Bhubaneswar
-                    </p>
-                    <p className="training-dates">
-                      during July 27-29, 2026.
-                    </p>
-                  </div>
+                      <div className="training-details">
+                        <p className="training-line-1">
+                          has successfully completed the Training Programme on <strong className="highlight-program">“Strengthening Agriculture Research</strong>
+                        </p>
+                        <p className="training-line-2">
+                          <strong className="highlight-program">with Gender Perspective for Sustainable Agri-Food System”</strong> organized by
+                        </p>
+                        <p className="training-organizer">
+                          {settings.trainingOrganizer || 'ICAR-Central Institute for Women in Agriculture, Bhubaneswar'}
+                        </p>
+                        <p className="training-dates">
+                          {displayTrainingDates}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="training-details icar-training-details" style={{ lineHeight: '1.5', marginTop: '-5px' }}>
+                      <p className="training-line-1">
+                        has successfully completed the Training Programme on <strong className="highlight-program">“Strengthening Agriculture</strong>
+                      </p>
+                      <p className="training-line-2">
+                        <strong className="highlight-program">Research with Gender Perspective for Sustainable Agri-Food System” for Nodal</strong>
+                      </p>
+                      <p className="training-line-3" style={{ margin: '4px 0', fontFamily: '"EB Garamond", "Georgia", serif', color: '#003300' }}>
+                        <strong className="highlight-program">& Co-Nodal Officers- Gender Research in Agriculture (NO-GRA)</strong> organized by
+                      </p>
+                      <p className="training-organizer">
+                        {settings.trainingOrganizer || 'ICAR-Central Institute for Women in Agriculture, Bhubaneswar'}
+                      </p>
+                      <p className="training-dates">
+                        {displayTrainingDates}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Footer Section */}
                 <div className="certificate-footer-box">
                   <div className="serial-no-box">
-                    Serial Number: {serialNumber}
+                    {/* Dynamic QR Code (Only image, left aligned above serial number) */}
+                    {qrCodeUrl && (
+                      <img src={qrCodeUrl} alt="QR Code" className="qr-code-img" />
+                    )}
+                    <div className="serial-text">Serial Number: {validSerial}</div>
                   </div>
                   <div className="signature-box">
-                    <img src={directorSign} alt="Director Signature" className="director-signature-img" />
-                    <p className="sig-name">Dr. Mridula Devi</p>
-                    <p className="sig-title">(Director, ICAR-CIWA)</p>
+                    <img 
+                      src={settings.directorSignatureImage} 
+                      alt="Director Signature" 
+                      className="director-signature-img" 
+                    />
+                    <p className="sig-name">{settings.directorName || 'Dr. Mridula Devi'}</p>
+                    <p className="sig-title">{settings.directorTitle || '(Director, ICAR-CIWA)'}</p>
                   </div>
                 </div>
 

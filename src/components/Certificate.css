@@ -2,7 +2,7 @@
    ICAR-CIWA Certificate of Completion — Large Professional Layout
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&family=EB+Garamond:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel:wght@500;600;700;800;900&family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&family=EB+Garamond:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700;1,800&family=Inter:wght@400;500;600;700;800&display=swap');
 
 .certificate-wrapper {
   display: flex;
@@ -19,6 +19,21 @@
   position: relative;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
   box-sizing: border-box;
+
+  /* Anti-Screenshot & Copy Protection CSS */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.certificate-container img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
 }
 
 /* Dual-Color Gold/Brown 4-Border Frame System (Fully html2canvas & PDF compatible) */
@@ -48,7 +63,7 @@
   position: absolute;
   inset: 0px;
   border: 4px solid #866b22; /* 4. Inner Brown Line */
-  padding: 22px 42px 20px 42px;
+  padding: 18px 25px 25px 25px; /* Proper top & bottom padding so footer never touches border */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -65,7 +80,7 @@
 }
 
 .logo-left-box .left-logo-img {
-  height: 120px;
+  height: 95px;
   width: auto;
   object-fit: contain;
 }
@@ -96,7 +111,7 @@
   object-fit: contain;
   display: block;
   margin: 0 auto;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 /* ==================== BODY SECTION ==================== */
@@ -115,14 +130,12 @@
   font-size: 23px;
   font-weight: 800;
   color: #003300;
-  margin: 6px 0 10px 0;
-  margin-top: 15px;
-  
+  margin: 4px 0 6px 0;
 }
 
 /* Participant Name & Institute Line */
 .participant-fullname {
-  font-family: 'Lucida Calligraphy';
+  font-family: 'Lucida Calligraphy', 'Dancing Script', 'EB Garamond', cursive, serif;
   font-size: 23px;
   font-weight: 700;
   font-style: italic;
@@ -130,7 +143,16 @@
   margin: 6px 0 12px 0;
   line-height: 1.35;
   padding: 0 15px;
-  max-width: 900px;
+  max-width: 950px;
+}
+
+.participant-fullname.icar-institute-name {
+  font-family: 'Lucida Calligraphy', 'Dancing Script', 'EB Garamond', cursive, serif !important;
+  color: #2b5d2b !important; /* precise dark green */
+  font-size: 26px !important;
+  font-weight: 700 !important;
+  font-style: italic !important;
+  margin: 6px 0 10px 0;
 }
 
 /* ATARI Zone Line */
@@ -147,14 +169,22 @@
 
 /* Training Details */
 .training-details {
-  max-width: 880px;
+  max-width: 930px;
   margin: 0 auto;
   line-height: 1.55;
   margin-top: -15px;
 }
 
+.icar-training-details p {
+  font-size: 24px;
+}
+.icar-training-details .highlight-program {
+  font-size: 24px;
+}
+
 .training-line-1,
-.training-line-2 {
+.training-line-2,
+.training-line-3 {
   font-family: 'EB Garamond', 'Georgia', serif;
   font-size: 22px;
   color: #003300;
@@ -172,7 +202,7 @@
 
 .training-organizer {
   font-family: 'EB Garamond', 'Georgia', serif;
-  font-size: 20px;
+  font-size: 22px;
   color: #003300;
   margin: 6px 0 4px 0;
   line-height: 1.55;
@@ -180,7 +210,7 @@
 
 .training-dates {
   font-family: 'EB Garamond', 'Georgia', serif;
-  font-size: 20px;
+  font-size: 22px;
   color: #003300;
   margin: 4px 0 0 0;
   line-height: 1.55;
@@ -192,16 +222,35 @@
   justify-content: space-between;
   align-items: flex-end;
   width: 100%;
-  padding-top: 14px;
+  padding-top: 4px;
+  padding-bottom: 8px;
   margin-top: auto;
 }
 
 .serial-no-box {
   font-family: 'Inter', sans-serif;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   color: #003300;
-  margin-bottom: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.qr-code-img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  display: block;
+}
+
+.serial-text {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: #003300;
 }
 
 .signature-box {
@@ -260,42 +309,42 @@
 
 /* Scale for preview area across all screen sizes */
 @media (max-width: 1400px) {
-  .certificate-container {
+  .preview-content .certificate-container {
     transform: scale(0.9);
     transform-origin: top center;
   }
 }
 
 @media (max-width: 1200px) {
-  .certificate-container {
+  .preview-content .certificate-container {
     transform: scale(0.82);
     transform-origin: top center;
   }
 }
 
 @media (max-width: 980px) {
-  .certificate-container {
+  .preview-content .certificate-container {
     transform: scale(0.68);
     transform-origin: top center;
   }
 }
 
 @media (max-width: 768px) {
-  .certificate-container {
+  .preview-content .certificate-container {
     transform: scale(0.58);
     transform-origin: top center;
   }
 }
 
 @media (max-width: 580px) {
-  .certificate-container {
+  .preview-content .certificate-container {
     transform: scale(0.44);
     transform-origin: top center;
   }
 }
 
 @media (max-width: 420px) {
-  .certificate-container {
+  .preview-content .certificate-container {
     transform: scale(0.33);
     transform-origin: top center;
   }
